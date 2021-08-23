@@ -1,0 +1,45 @@
+image:
+  name: ${docker_image}
+  tag: ${docker_tag}
+  pullPolicy: Always
+
+# By default the LB is External. Use Internal when in the same VPC and region
+service:
+  type: LoadBalancer
+  annotations:
+    networking.gke.io/load-balancer-type: "External"
+
+# Add usernames to create users
+extraEnvs:
+  USER: ${ssh_user_name}
+
+# Add username as key and public key as value
+users:
+  ${ssh_user_name}: "${ssh_user_key}"
+
+# Reqiured: Add your Openssh-bastion Private Key
+host:
+  keys: ""
+
+## Configure resource requests and limits
+## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  requests:
+    cpu: 20m
+    memory: 50Mi
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+loadBalancerSourceRanges:
+%{ for network in authorized_networks ~}
+- ${network}
+%{ endfor ~}

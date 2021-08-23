@@ -1,0 +1,4 @@
+apiVersion: v2
+description: SSH Server configured for Bastion Host usage
+name: ssh-bastion
+version: 1.0.0
